@@ -32,7 +32,10 @@ define([
             },
             getFeatures(query, featureCallback, finishedCallback, errorCallback) {
                 let url = this.baseUrl + 'labels/' + query.ref;
-                let queryVals = '?start='+query.start+'&end='+query.end+'&name='+this.name;
+
+                console.log(this.config);
+
+                let queryVals = '?start='+query.start+'&end='+query.end+'&name='+this.config.label;
 
                 let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback)
 
@@ -53,16 +56,21 @@ define([
                 endCallback();
             },
             addFeature: function(query){
-                console.log(query)
-                sendPost('add', query);
+                sendPost('add', this.addName(query));
             },
             updateFeature(query)
             {
-                sendPost('update', query);
+                sendPost('update', this.addName(query));
             },
             removeFeature(query)
             {
-                sendPost('remove', query);
+                sendPost('remove', this.addName(query));
+            },
+            addName(query)
+            {
+              query['name'] = this.config.label;
+
+              return query;
             },
             // Aquired from jbrowse/Store/SeqFeature/REST.js
             _errorHandler: function( handler ) {
@@ -80,7 +88,6 @@ define([
                     }
                 });
             },
-
             saveStore() {
                 return {
                     urlTemplate: this.config.blob.url
