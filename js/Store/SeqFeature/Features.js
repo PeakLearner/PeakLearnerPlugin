@@ -33,8 +33,6 @@ define([
             getFeatures(query, featureCallback, finishedCallback, errorCallback) {
                 let url = this.baseUrl + 'labels/' + query.ref;
 
-                console.log(this.config);
-
                 let queryVals = '?start='+query.start+'&end='+query.end+'&name='+this.config.label;
 
                 let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback)
