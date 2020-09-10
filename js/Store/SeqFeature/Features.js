@@ -54,6 +54,7 @@ define([
                 endCallback();
             },
             addFeature: function(query){
+
                 sendPost('add', this.addName(query));
             },
             updateFeature(query)
