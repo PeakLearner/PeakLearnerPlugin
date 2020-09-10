@@ -28,12 +28,12 @@ define([
                 if( this.baseUrl.charAt( this.baseUrl.length-1 ) != '/' )
                     this.baseUrl = this.baseUrl + '/';
 
-                this.name = args.name;
+                this.name = args.name || this.config.label;
             },
             getFeatures(query, featureCallback, finishedCallback, errorCallback) {
                 let url = this.baseUrl + 'labels/' + query.ref;
 
-                let queryVals = '?start='+query.start+'&end='+query.end+'&name='+this.config.label;
+                let queryVals = '?start='+query.start+'&end='+query.end+'&name='+this.name;
 
                 let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback)
 
@@ -67,9 +67,8 @@ define([
             },
             addName(query)
             {
-              query['name'] = this.config.label;
-
-              return query;
+                query['name'] = this.name;
+                return query;
             },
             // Aquired from jbrowse/Store/SeqFeature/REST.js
             _errorHandler: function( handler ) {
