@@ -41,17 +41,18 @@ function (
             var myBrowser = this.browser;
             var content = this.content = {};
             var dataRoot = this.dataRoot;
-            content.selectedRows = [];
+            var currentStatus = ""
+            var thisB = this;
             var container = dom.create('div', { className: 'search-dialog' });
             var introdiv = dom.create('div', {
                 className: 'mark-dialog intro',
                 innerHTML: 'Upload a new hub.txt to the PeakLearner system for configuring.'
             }, container);
             var markDescriptionDiv = dom.create('div', { className: 'markDescrpit' }, container);
-            var errorDiv = dom.create('div', { className: 'header' }, container);
-
-            //TODO: Add a way to display errors
-            content.errorDiv = errorDiv;
+            var status = dom.create('div', {
+                        className: 'mark-dialog',
+                        innerHTML: currentStatus,
+                    }, markDescriptionDiv);
             // Add new track hub
             content.urlBox = new dTextBox({
                 id: 'urlBox',
@@ -59,19 +60,24 @@ function (
                 placeHolder: 'TrackHub URL'
             }).placeAt(markDescriptionDiv);
 
-
             var addHubButton = new dButton({
                 iconClass: 'dijitIconNewTask',
                 showLabel: true,
                 label: 'Upload Hub',
-                onClick: function () {
+                onClick: () => {
+                    // TODO: Make this in such a way that it can "Ping the server" on progress instead of waiting for the server to complete
                     var desc = content.urlBox.get('value');
-                    var success = function(data, status, xhr)
-                    {
-                        console.log("Callback");
-                        console.log(data);
-                    }
-                    sendPost('newHub', desc, success)
+                    var success = (data, status, xhr) => {
+                        const baseUrl = thisB.browser.config.baseUrl;
+
+                        const newUrl = baseUrl + "?data=" + data;
+
+                        // for the love of god tell me there is a better way
+                        // This is supposed to be the status div created above
+                        this.domNode.children[1].children[0].children[1].children[0].innerHTML="New Hub created at " +
+                            "<a href=\"" + newUrl + "\">" + newUrl + "</a> ";
+                    };
+                    sendPost('parseHub', desc, success);
                     content.urlBox.reset();
                 }
             }).placeAt(markDescriptionDiv);
