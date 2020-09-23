@@ -31,26 +31,15 @@ define([
                 this.name = args.name || this.config.label;
             },
             getFeatures(query, featureCallback, finishedCallback, errorCallback) {
-                let url = this.baseUrl + 'labels/' + query.ref;
+                let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback);
 
-                let queryVals = '?start='+query.start+'&end='+query.end+'&name='+this.name;
-
-                let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback)
-
-                url +=queryVals;
-
-                dojoRequest( url, {
-                    method: 'GET',
-                    handleAs: 'json'
-                }).then(callback, this._errorHandler(errorCallback));
+                // This should probably be handled with a get request instead
+                sendPost('getLabels', this.addName(query), callback, this._errorHandler(errorCallback));
             },
             _makeFeatures: function( featureCallback, endCallback, errorCallback, featureData ) {
-                let features
-                if( featureData && ( features = featureData.features ) ) {
-                    features.forEach(data => {
-                        featureCallback(new SimpleFeature({ data }))
-                    })
-                }
+                featureData.forEach(data => {
+                    featureCallback(new SimpleFeature({ data }))
+                })
                 endCallback();
             },
             addFeature: function(query){
