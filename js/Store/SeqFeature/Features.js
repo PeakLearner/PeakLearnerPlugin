@@ -37,9 +37,12 @@ define([
                 sendPost('getLabels', this.addName(query), callback, this._errorHandler(errorCallback));
             },
             _makeFeatures: function( featureCallback, endCallback, errorCallback, featureData ) {
-                featureData.forEach(data => {
+                if(featureData)
+                {
+                    featureData.forEach(data => {
                     featureCallback(new SimpleFeature({ data }))
                 })
+                }
                 endCallback();
             },
             addFeature: function(query){
