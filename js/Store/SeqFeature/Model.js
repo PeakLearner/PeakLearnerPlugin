@@ -34,7 +34,7 @@ define([
                 let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback);
 
                 // This should probably be handled with a get request instead
-                sendPost('getLabels', this.addName(query), callback, this._errorHandler(errorCallback));
+                sendPost('getModel', this.addName(query), callback, this._errorHandler(errorCallback));
             },
             _makeFeatures: function( featureCallback, endCallback, errorCallback, featureData ) {
                 if(featureData)
@@ -44,18 +44,6 @@ define([
                 })
                 }
                 endCallback();
-            },
-            addFeature: function(query){
-
-                sendPost('add', this.addName(query));
-            },
-            updateFeature(query)
-            {
-                sendPost('update', this.addName(query));
-            },
-            removeFeature(query)
-            {
-                sendPost('remove', this.addName(query));
             },
             addName(query)
             {
