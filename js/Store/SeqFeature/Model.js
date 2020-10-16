@@ -34,7 +34,7 @@ define([
                 let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback);
 
                 // This should probably be handled with a get request instead
-                sendPost('getModel', this.addName(query), callback, this._errorHandler(errorCallback));
+                sendPost('getModel', this.addTrack(query), callback, this._errorHandler(errorCallback));
             },
             _makeFeatures: function( featureCallback, endCallback, errorCallback, featureData ) {
                 if(featureData)
@@ -45,9 +45,9 @@ define([
                 }
                 endCallback();
             },
-            addName(query)
+            addTrack(query)
             {
-                query['name'] = this.name;
+                query['name'] = this.config.label;
                 return query;
             },
             // Aquired from jbrowse/Store/SeqFeature/REST.js
