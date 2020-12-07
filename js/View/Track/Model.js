@@ -23,47 +23,6 @@ function (
                 newModel.config = Object.assign({}, args.config, conf)
                 this.modelStore = new CLASS(newModel)
             },
-            _defaultConfig: function () {
-                return Util.deepUpdate(dojo.clone(this.inherited(arguments)),
-                    {
-                        highlightColor: function (feature, track) {
-                            // determines the color of the see through part of the label
-                            // to add new type of label add type to this list
-                            const states = {
-                                'unknown': 'rgba(100,100,100,.4)',
-                                'peak': 'rgba(180,167,214,0.4)',
-                                'noPeak': 'rgba(255,250,150,0.4)',
-                                'peakStart': 'rgba(255,180,235,0.4)',
-                                'peakEnd': 'rgba(244,185,185,0.4)'
-
-                        };
-                            return states[feature.get('label') || 'unknown'];
-                        },
-
-                        indicatorColor: function (feature, track ) {
-                            // determines the color of the bar at the bottom of the label
-                            // to add new type of label add type to this list
-                            const states = {
-                                'unknown': 'rgb(100,100,100)',
-                                'peak': 'rgb(180,167,214)',
-                                'noPeak': 'rgb(255,245,150)',
-                                'peakStart': 'rgb(255,210,241)',
-                                'peakEnd': 'rgb(244,204,204)'};
-                            return states[feature.get('label') || 'unknown'];
-                        },
-
-                        style:
-                        {
-                            label: function( feature, track )
-                            {
-                                return feature.get('label');
-                            }
-                        },
-
-
-                    });
-            },
-
             _postDraw: function (scale, leftBase, rightBase, block, canvas) {
                 // Call WiggleHighlighter post draw
                 this.inherited(arguments)
