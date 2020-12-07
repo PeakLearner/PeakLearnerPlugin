@@ -7,7 +7,7 @@ define([
         'dojo/Deferred',
         'JBrowse/Util',
         'JBrowse/Model/SimpleFeature',
-        'JBrowse/Store/SeqFeature'
+        'JBrowse/View/Track/_FeatureDetailMixin',
     ],
     function (
         declare,
@@ -18,9 +18,9 @@ define([
         Deferred,
         Util,
         SimpleFeature,
-        SeqFeatureStore,
+        FeatureDetailMixin
     ) {
-        return declare([ SeqFeatureStore ], {
+        return declare(FeatureDetailMixin, {
             constructor: function( args )
             {
                 // make sure the baseUrl has a trailing slash
@@ -29,12 +29,13 @@ define([
                     this.baseUrl = this.baseUrl + '/';
 
                 this.name = args.name || this.config.label;
+                this.command = "base"
             },
             getFeatures(query, featureCallback, finishedCallback, errorCallback) {
                 let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback);
 
                 // This should probably be handled with a get request instead
-                sendPost('getModel', this.addTrack(query), callback, this._errorHandler(errorCallback));
+                sendPost(this.command, this.addName(query), callback, this._errorHandler(errorCallback));
             },
             _makeFeatures: function( featureCallback, endCallback, errorCallback, featureData ) {
                 if(featureData)
@@ -45,9 +46,21 @@ define([
                 }
                 endCallback();
             },
-            addTrack(query)
+            addFeature: function(query, callback)
             {
-                query['name'] = this.config.label;
+                sendPost('addLabel', this.addName(query), callback);
+            },
+            updateFeature(query, callback)
+            {
+                sendPost('updateLabel', this.addName(query), callback);
+            },
+            removeFeature(query, callback)
+            {
+                sendPost('removeLabel', this.addName(query), callback);
+            },
+            addName(query)
+            {
+                query['name'] = this.name;
                 return query;
             },
             // Aquired from jbrowse/Store/SeqFeature/REST.js
