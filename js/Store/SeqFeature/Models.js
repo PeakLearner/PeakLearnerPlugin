@@ -8,7 +8,7 @@ try {
             constructor: function(args)
             {
                 this.inherited(arguments);
-                this.command = 'getModels'
+                this.handler = 'models'
             }
         })
   })

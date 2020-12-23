@@ -29,13 +29,13 @@ define([
                     this.baseUrl = this.baseUrl + '/';
 
                 this.name = args.name || this.config.label;
-                this.command = "base"
+                this.track = args.track || this.config.key
+                this.query = "base"
             },
             getFeatures(query, featureCallback, finishedCallback, errorCallback) {
                 let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback);
-
                 // This should probably be handled with a get request instead
-                sendPost(this.command, this.addName(query), callback, this._errorHandler(errorCallback));
+                sendPost('get', this.getHandlerUrl(), this.addName(query), callback, this._errorHandler(errorCallback));
             },
             _makeFeatures: function( featureCallback, endCallback, errorCallback, featureData ) {
                 if(featureData)
@@ -48,20 +48,24 @@ define([
             },
             addFeature: function(query, callback)
             {
-                sendPost('addLabel', this.addName(query), callback);
+                sendPost('add', this.getHandlerUrl(), this.addName(query), callback);
             },
-            updateFeature(query, callback)
+            updateFeature: function(query, callback)
             {
-                sendPost('updateLabel', this.addName(query), callback);
+                sendPost('update', this.getHandlerUrl(), this.addName(query), callback);
             },
-            removeFeature(query, callback)
+            removeFeature: function(query, callback)
             {
-                sendPost('removeLabel', this.addName(query), callback);
+                sendPost('remove', this.getHandlerUrl(), this.addName(query), callback);
             },
-            addName(query)
+            addName: function(query)
             {
                 query['name'] = this.name;
                 return query;
+            },
+            getHandlerUrl: function()
+            {
+                return this.track + '/' + this.handler + '/'
             },
             // Aquired from jbrowse/Store/SeqFeature/REST.js
             _errorHandler: function( handler ) {
