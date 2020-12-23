@@ -66,18 +66,14 @@ function (
                 label: 'Upload Hub',
                 onClick: () => {
                     // TODO: Make this in such a way that it can "Ping the server" on progress instead of waiting for the server to complete
-                    var desc = content.urlBox.get('value');
+                    var desc = {"hubUrl": content.urlBox.get('value')};
                     var success = (data, status, xhr) => {
-                        const baseUrl = thisB.browser.config.baseUrl;
-
-                        const newUrl = baseUrl + "?data=" + data;
-
                         // for the love of god tell me there is a better way
                         // This is supposed to be the status div created above
-                        this.domNode.children[1].children[0].children[1].children[0].innerHTML="New Hub created at " +
-                            "<a href=\"" + newUrl + "\">" + newUrl + "</a> ";
+                        this.domNode.children[1].children[0].children[1].children[0].innerHTML="" +
+                            "<a href=\"" + data + "\">New Hub Url</a> ";
                     };
-                    sendPost('parseHub', desc, success);
+                    sendPost('parseHub', '/uploadHubUrl/', desc, success);
                     content.urlBox.reset();
                 }
             }).placeAt(markDescriptionDiv);
