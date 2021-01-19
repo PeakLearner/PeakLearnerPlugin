@@ -66,7 +66,6 @@ function (
                             },
                             block.domNode,
                             );
-                        console.log(feature)
                     },
                     () => {},
                     error => {
