@@ -27,17 +27,26 @@ function (
                 // Call WiggleHighlighter post draw
                 this.inherited(arguments)
 
-                this.modelStore.getFeatures({ ref: this.browser.refSeq.name, start: leftBase, end: rightBase },
+                this.modelStore.getFeatures({ ref: this.browser.refSeq.name, start: leftBase, end: rightBase, width: canvas.width, scale: scale },
                     feature => {
-                        const s = block.bpToX(
-                            Math.max(
-                                feature.get('start') - this.config.broaden,
-                                block.startBase,
+
+                        const type = feature.get('type');
+                        let s, e;
+                        if (type === 'peak') {
+                            s = block.bpToX(
+                                Math.max(
+                                    feature.get('start') - this.config.broaden,
+                                    block.startBase,
                                 ),
                             );
-                        const e = block.bpToX(
-                            Math.min(feature.get('end') + this.config.broaden, block.endBase),
+                            e = block.bpToX(
+                                Math.min(feature.get('end') + this.config.broaden, block.endBase),
                             );
+                        } else if (type === 'lopart') {
+                            s = feature.get('start');
+                            e = feature.get('end');
+                        }
+
 
                         const score = Math.round(feature.get('score'));
                         const height = (parseInt(canvas.style.height, 10) - score) + "px";
@@ -57,7 +66,6 @@ function (
                             },
                             block.domNode,
                             );
-
                     },
                     () => {},
                     error => {
