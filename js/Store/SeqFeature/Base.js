@@ -35,7 +35,7 @@ define([
             getFeatures(query, featureCallback, finishedCallback, errorCallback) {
                 let callback = dojo.hitch(this, '_makeFeatures', featureCallback, finishedCallback, errorCallback);
                 // This should probably be handled with a get request instead
-                sendPost('get', this.getHandlerUrl(), this.addName(query), callback, this._errorHandler(errorCallback));
+                this.sendPost('get', query, callback, this._errorHandler(errorCallback));
             },
             _makeFeatures: function( featureCallback, endCallback, errorCallback, featureData ) {
                 if(featureData)
@@ -48,26 +48,33 @@ define([
             },
             addFeature: function(query, callback)
             {
-                sendPost('add', this.getHandlerUrl(), this.addName(query), callback);
+                this.sendPost('add', query, callback);
             },
             updateFeature: function(query, callback)
             {
-                sendPost('update', this.getHandlerUrl(), this.addName(query), callback);
+                this.sendPost('update', query, callback);
             },
             removeFeature: function(query, callback)
             {
-                sendPost('remove', this.getHandlerUrl(), this.addName(query), callback);
+                this.sendPost('remove', query, callback);
             },
-            addName: function(query)
+            sendPost: function(command, query, callback)
             {
                 query['name'] = this.name;
-                return query;
+                let xhrArgs = {
+                    url: this.getHandlerUrl(),
+                    handleAs: 'json',
+                    postData: JSON.stringify({'command': command, 'args': query}),
+                    load: callback
+                };
+
+                var deferred = dojo.xhrPost(xhrArgs);
             },
             getHandlerUrl: function()
             {
                 return this.track + '/' + this.handler + '/'
             },
-            // Aquired from jbrowse/Store/SeqFeature/REST.js
+            // Acquired from jbrowse/Store/SeqFeature/REST.js
             _errorHandler: function( handler ) {
                 handler = handler || function(e) {
                     console.error( e, e.stack );

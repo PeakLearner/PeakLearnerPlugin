@@ -22,12 +22,18 @@ function (
                 const newModel = Object.assign({}, args, conf)
                 newModel.config = Object.assign({}, args.config, conf)
                 this.modelStore = new CLASS(newModel)
+
             },
             _postDraw: function (scale, leftBase, rightBase, block, canvas) {
                 // Call WiggleHighlighter post draw
                 this.inherited(arguments)
 
-                this.modelStore.getFeatures({ ref: this.browser.refSeq.name, start: leftBase, end: rightBase, width: canvas.width, scale: scale },
+                this.modelStore.getFeatures({ ref: this.browser.refSeq.name,
+                        start: leftBase,
+                        end: rightBase,
+                        width: canvas.width,
+                        scale: scale,
+                        visible: this.browser.view.visibleRegion()},
                     feature => {
 
                         const type = feature.get('type');

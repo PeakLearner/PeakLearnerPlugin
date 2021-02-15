@@ -9,7 +9,7 @@ try {
             {
                 this.inherited(arguments);
                 this.handler = 'models'
-            }
+            },
         })
   })
 } catch (e) {}
