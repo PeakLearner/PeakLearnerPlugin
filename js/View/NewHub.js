@@ -52,6 +52,7 @@ function (
             var status = dom.create('div', {
                         className: 'mark-dialog',
                         innerHTML: currentStatus,
+                        id: 'uploadStatus',
                     }, markDescriptionDiv);
             // Add new track hub
             content.urlBox = new dTextBox({
@@ -68,9 +69,7 @@ function (
                     // TODO: Make this in such a way that it can "Ping the server" on progress instead of waiting for the server to complete
                     var desc = {"hubUrl": content.urlBox.get('value')};
                     var success = (data, status, xhr) => {
-                        // for the love of god tell me there is a better way
-                        // This is supposed to be the status div created above
-                        this.domNode.children[1].children[0].children[1].children[0].innerHTML="" +
+                        document.getElementById('uploadStatus').innerHTML="" +
                             "<a href=\"" + data + "\">New Hub Url</a> ";
                     };
                     sendPost('parseHub', '/uploadHubUrl/', desc, success);

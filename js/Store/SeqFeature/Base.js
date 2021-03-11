@@ -54,9 +54,38 @@ define([
             {
                 this.sendPost('update', query, callback);
             },
+            updateAlignedFeatures(query, callback)
+            {
+                this.withAligned(query, callback, 'updateAligned');
+            },
             removeFeature: function(query, callback)
             {
                 this.sendPost('remove', query, callback);
+            },
+            removeAlignedFeatures(query, callback)
+            {
+                this.withAligned(query, callback, 'removeAligned');
+            },
+            withAligned(query, callback, type)
+            {
+                let currentStore = this.config.storeClass;
+
+                let tracksToCheck = [];
+
+                this.browser.view.tracks.forEach(track => {
+                    if(track.config.storeConf)
+                    {
+                        if(track.config.storeConf.storeClass === currentStore)
+                        {
+                            tracksToCheck.push(track.config.label)
+                        }
+                    }
+                })
+                if(tracksToCheck.length > 0)
+                {
+                    query['tracks'] = tracksToCheck
+                    this.sendPost(type, query, callback)
+                }
             },
             sendPost: function(command, query, callback)
             {
