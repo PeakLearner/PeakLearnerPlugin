@@ -4,6 +4,7 @@ define([
     'dojo/Deferred',
     'dojo/dom',
     'dojo/dom-construct',
+    'dojo/request',
     'dijit/MenuSeparator',
     'dijit/CheckedMenuItem',
     'dijit/form/DropDownButton',
@@ -20,6 +21,7 @@ define([
             Deferred,
             dom,
             domConstruct,
+            dojoRequest,
             dijitMenuSeparator,
             dijitCheckedMenuItem,
             dijitDropDownButton,
@@ -38,13 +40,28 @@ return declare( JBrowsePlugin,
 
             console.log('PeakLearner plugin starting');
             myBrowser.afterMilestone('initView', function () {
-                var buttontext = new dijitMenuItem({
+
+                var datasetButton = new dijitMenuItem({
                     label: 'Upload New Dataset',
                     iconClass: 'dijitIconNewTask',
                     onClick: lang.hitch(thisB, 'newDataset')
                 });
 
-                myBrowser.addGlobalMenuItem('peaklearner', buttontext);
+                myBrowser.addGlobalMenuItem('peaklearner', datasetButton);
+
+                var unlabeledButton = new dijitMenuItem({
+                    label: 'Go to unlabeled region',
+                    onClick: lang.hitch(thisB, 'goToUnlabeled')
+                });
+
+                myBrowser.addGlobalMenuItem('peaklearner', unlabeledButton);
+
+                var labeledButton = new dijitMenuItem({
+                    label: 'Go to labeled region',
+                    onClick: lang.hitch(thisB, 'goToLabeled')
+                });
+
+                myBrowser.addGlobalMenuItem('peaklearner', labeledButton);
 
                 if (dijitRegistry.byId('dropdownmenu_peaklearner') == undefined) {
                     myBrowser.renderGlobalMenu('peaklearner', {text: 'PeakLearner'}, myBrowser.menuBar);
@@ -53,7 +70,31 @@ return declare( JBrowsePlugin,
                 console.log('PeakLearner plugin added');
             });
         },
+        goToUnlabeled: function(){
+            this.goToRegion("unlabeled");
+        },
+        goToLabeled: function(){
+            this.goToRegion("labeled");
+        },
+        goToRegion: function(region){
 
+            let regionCallback = (data) => {
+                if(data){
+                    this.browser.navigateToLocation(data)
+                }
+            };
+
+            let url = this.browser.config.baseUrl + 'data/hub';
+
+            let xhrArgs = {
+                url: url,
+                handleAs: "json",
+                postData: JSON.stringify({'command': 'goTo', 'args': {'type': region}}),
+                load: regionCallback
+            };
+
+            var deferred = dojo.xhrPost(xhrArgs);
+        },
         newDataset: function(){
         var hub = new NewHub();
         var browser = this.browser;
