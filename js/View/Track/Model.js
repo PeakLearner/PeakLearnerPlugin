@@ -1,5 +1,7 @@
 define([
+
     'dojo/_base/declare',
+    'dojo',
     'dojo/on',
     'dojo/mouse',
     'JBrowse/Util',
@@ -7,6 +9,7 @@ define([
 ],
 function (
     declare,
+    dojo,
     on,
     mouse,
     Util,
@@ -28,12 +31,18 @@ function (
                 // Call WiggleHighlighter post draw
                 this.inherited(arguments)
 
+                // Because the menu is a dijit widget, dijit.byId needs to be used
+                let lopart = dijit.byId("lopart")
+
+                console.log(lopart)
+
                 this.modelStore.getFeatures({ ref: this.browser.refSeq.name,
                         start: leftBase,
                         end: rightBase,
                         width: canvas.width,
                         scale: scale,
-                        visible: this.browser.view.visibleRegion()},
+                        visible: this.browser.view.visibleRegion(),
+                        useLopart: lopart.checked},
                     feature => {
 
                         const type = feature.get('type');

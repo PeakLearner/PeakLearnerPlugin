@@ -23,7 +23,7 @@ define([
             domConstruct,
             dojoRequest,
             dijitMenuSeparator,
-            dijitCheckedMenuItem,
+            CheckedMenuItem,
             dijitDropDownButton,
             dijitDropDownMenu,
             dijitButton,
@@ -62,6 +62,10 @@ return declare( JBrowsePlugin,
                 });
 
                 myBrowser.addGlobalMenuItem('peaklearner', labeledButton);
+
+                var cItem = new CheckedMenuItem({label:"Use LOPART Models where necessary", checked:true, id:'lopart'});
+
+                myBrowser.addGlobalMenuItem('peaklearner', cItem)
 
                 if (dijitRegistry.byId('dropdownmenu_peaklearner') == undefined) {
                     myBrowser.renderGlobalMenu('peaklearner', {text: 'PeakLearner'}, myBrowser.menuBar);
