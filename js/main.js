@@ -63,7 +63,7 @@ return declare( JBrowsePlugin,
 
                 myBrowser.addGlobalMenuItem('peaklearner', labeledButton);
 
-                var cItem = new CheckedMenuItem({label:"Use LOPART Models where necessary", checked:true, id:'lopart'});
+                var cItem = new CheckedMenuItem({label:"Use LOPART Models where necessary", checked:false, id:'lopart'});
 
                 myBrowser.addGlobalMenuItem('peaklearner', cItem)
 

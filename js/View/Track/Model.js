@@ -34,8 +34,6 @@ function (
                 // Because the menu is a dijit widget, dijit.byId needs to be used
                 let lopart = dijit.byId("lopart")
 
-                console.log(lopart)
-
                 this.modelStore.getFeatures({ ref: this.browser.refSeq.name,
                         start: leftBase,
                         end: rightBase,
