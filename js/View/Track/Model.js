@@ -19,12 +19,27 @@ function (
         {
             constructor: function(args)
             {
-                this.inherited(arguments)
-                const conf = this.config.storeConf
-                const CLASS = dojo.global.require(conf.modelClass)
-                const newModel = Object.assign({}, args, conf)
-                newModel.config = Object.assign({}, args.config, conf)
-                this.modelStore = new CLASS(newModel)
+                this.inherited(arguments);
+                const conf = this.config.storeConf;
+                const CLASS = dojo.global.require(conf.modelClass);
+                const newModel = Object.assign({}, args, conf);
+                newModel.config = Object.assign({}, args.config, conf);
+                this.modelStore = new CLASS(newModel);
+
+                this.cacheKey = 0;
+
+                let thisB = this;
+
+                let updateCacheKey = function(){
+                    let keys = Object.keys(thisB.browser.view.trackIndices);
+
+                    if(keys.includes(thisB.key)) {
+                        thisB.modelStore.cacheKey++
+                        thisB.highlightStore.cacheKey++
+                    }
+                }
+
+                dojo.subscribe('/jbrowse/v1/n/tracks/redraw', updateCacheKey)
 
             },
             _postDraw: function (scale, leftBase, rightBase, block, canvas) {
@@ -63,7 +78,6 @@ function (
 
                         const score = Math.round(feature.get('score'));
                         const height = (parseInt(canvas.style.height, 10) - score) + "px";
-
                         const indicator = dojo.create(
                             'div',
                             {
