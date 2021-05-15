@@ -51,21 +51,23 @@ define([
             query.toString = function () {
                 return query.ref + ',' + query.start + ',' + query.end + ',' + thisB.cacheKey;
             };
-            let visibile = this.browser.view.visibleRegion()
-            var chunkSize = visibile['end'] - visibile['start'];
+            let visible = this.browser.view.visibleRegion()
+            var chunkSize = visible['end'] - visible['start'];
 
-            var s = query.start - query.start % chunkSize;
-            var e = query.end + (chunkSize - (query.end % chunkSize));
+            var s = visible['start'] - visible['start'] % chunkSize;
+            var e = visible['end'] + (chunkSize - (visible['end'] % chunkSize));
+            chunkSize = e - s;
             var chunks = [];
 
             var chunksProcessed = 0;
             var haveError = false;
             for (var start = s; start < e; start += chunkSize) {
-                var chunk = query
+                // Originally was var chunk = query but js is pass by reference so setting chunk also set the query
+                var chunk = dojo.clone(query);
                 chunk['start'] = start
                 chunk['end'] = start + chunkSize
                 chunk.toString = function () {
-                    return query.ref + ',' + query.start + ',' + query.end + ',' + thisB.cacheKey;
+                    return chunk.ref + ',' + chunk.start + ',' + chunk.end + ',' + thisB.cacheKey;
                 };
                 chunks.push(chunk);
             }
@@ -95,8 +97,6 @@ define([
                     }
                 });
             });
-
-
         },
         _resultsToFeatures: function(results, featCallback){
             if (results)
