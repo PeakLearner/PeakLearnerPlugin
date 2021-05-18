@@ -38,9 +38,13 @@ function (
                         thisB.highlightStore.cacheKey++
                     }
                 }
-
                 dojo.subscribe('/jbrowse/v1/n/tracks/redraw', updateCacheKey)
-
+            },
+            _defaultConfig: function () {
+                return Util.deepUpdate(dojo.clone(this.inherited(arguments)), {
+                    addBackend: true,
+                    PL: true,
+                })
             },
             _postDraw: function (scale, leftBase, rightBase, block, canvas) {
                 // Call WiggleHighlighter post draw

@@ -113,6 +113,9 @@ define([
         {
             this.sendPost('add', query, callback);
         },
+        addFeatures: function(query, callback){
+          this.sendPost('adds', query, callback);
+        },
         updateFeature: function(query, callback)
         {
             this.sendPost('update', query, callback);

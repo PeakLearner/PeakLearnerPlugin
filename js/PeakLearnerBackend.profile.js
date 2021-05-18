@@ -13,7 +13,7 @@ var profile = {
 
     basePath: '../../../src',
     packages: [
-        {name: 'PeakLearnerBackend', location: '../plugins/PeakLearnerBackend/js' }
+        {name: 'PeakLearnerBackend', location: '../plugins/WiggleHighlighter/js' }
     ],
 
     layerOptimize: 'closure',
