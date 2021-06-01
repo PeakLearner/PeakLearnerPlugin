@@ -50,8 +50,17 @@ function (
                 // Call WiggleHighlighter post draw
                 this.inherited(arguments)
 
-                // Because the menu is a dijit widget, dijit.byId needs to be used
-                let lopart = dijit.byId("lopart")
+                let modelTypes = ['NONE', 'LOPART', 'FLOPART'];
+                let typeToView;
+
+                modelTypes.forEach(modelType => {
+                    let menuCheck = dijit.byId(modelType)
+
+                    if(menuCheck.checked)
+                    {
+                        typeToView = modelType
+                    }
+                })
 
                 this.modelStore.getFeatures({ ref: this.browser.refSeq.name,
                         start: leftBase,
@@ -59,26 +68,20 @@ function (
                         width: canvas.width,
                         scale: scale,
                         visible: this.browser.view.visibleRegion(),
-                        useLopart: lopart.checked},
+                        modelType: typeToView},
                     feature => {
-
-                        const type = feature.get('type');
+                        console.log(feature)
                         let s, e;
-                        if (type === 'peak') {
-                            s = block.bpToX(
-                                Math.max(
-                                    feature.get('start') - this.config.broaden,
-                                    block.startBase,
-                                ),
-                            );
-                            e = block.bpToX(
-                                Math.min(feature.get('end') + this.config.broaden, block.endBase),
-                            );
-                        } else if (type === 'lopart') {
-                            s = feature.get('start');
-                            e = feature.get('end');
-                        }
 
+                        s = block.bpToX(
+                            Math.max(
+                                feature.get('start') - this.config.broaden,
+                                block.startBase,
+                            ),
+                        );
+                        e = block.bpToX(
+                            Math.min(feature.get('end') + this.config.broaden, block.endBase),
+                        );
 
                         const score = Math.round(feature.get('score'));
                         const height = (parseInt(canvas.style.height, 10) - score) + "px";
@@ -94,6 +97,7 @@ function (
                                     position: 'absolute',
                                     backgroundColor: 'red'
                                 },
+                                class: 'Model',
                             },
                             block.domNode,
                             );

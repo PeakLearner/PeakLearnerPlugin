@@ -67,7 +67,7 @@ function (
                 label: 'Upload Hub',
                 onClick: () => {
                     // TODO: Make this in such a way that it can "Ping the server" on progress instead of waiting for the server to complete
-                    var desc = {"hubUrl": content.urlBox.get('value')};
+                    var desc = {"url": content.urlBox.get('value')};
                     var success = (data, status, xhr) => {
                         document.getElementById('uploadStatus').innerHTML="" +
                             "<a href=\"" + data + "\">New Hub Url</a> ";

@@ -6,7 +6,6 @@ define([
         'dojo/dom-construct',
         'dojo/request',
         'dijit/MenuSeparator',
-        'dijit/CheckedMenuItem',
         'dijit/form/DropDownButton',
         'dijit/DropDownMenu',
         'dijit/form/Button',
@@ -15,6 +14,10 @@ define([
         'JBrowse/Util',
         'JBrowse/Plugin',
         './View/NewHub',
+        'dijit/MenuItem',
+        'dijit/Menu',
+        'dijit/PopupMenuItem',
+        'dijit/RadioMenuItem',
     ],
     function (
         declare,
@@ -24,7 +27,6 @@ define([
         domConstruct,
         dojoRequest,
         dijitMenuSeparator,
-        CheckedMenuItem,
         dijitDropDownButton,
         dijitDropDownMenu,
         dijitButton,
@@ -32,7 +34,10 @@ define([
         dijitMenuItem,
         Util,
         JBrowsePlugin,
-        NewHub
+        NewHub,
+        MenuItem,
+        Menu,
+        PopupMenuItem, RadioMenuItem
     ) {
         return declare(JBrowsePlugin,
             {
@@ -65,15 +70,45 @@ define([
 
                         myBrowser.addGlobalMenuItem('peaklearner', labeledButton);
 
-                        var cItem = new CheckedMenuItem({
-                            label: "Use LOPART Models where necessary",
-                            checked: false,
-                            id: 'lopart'
+
+                        let modelTypes = ['NONE', 'LOPART', 'FLOPART']
+
+                        let modelTypeMenu = new Menu({id: 'modelTypeMenu'});
+                        modelTypes.forEach(type => {
+                            modelTypeMenu.addChild(new RadioMenuItem({
+                                label: type,
+                                checked: (type === 'NONE'),
+                                class: 'modelMenuItem',
+                                id: type,
+                                onClick: (e) => {
+                                    console.log(e)
+                                    console.log(e.target)
+                                    let selectedState = e.target.innerHTML;
+
+                                    modelTypes.forEach(currentType => {
+                                        if (currentType !== selectedState)
+                                        {
+                                            let currentMenuItem = dijit.byId(currentType)
+
+                                            currentMenuItem.set('checked', false);
+                                        }
+                                    })
+
+                                    console.log(this)
+                                    myBrowser.view.redrawTracks()
+                                }
+                            }));
                         });
 
-                        myBrowser.addGlobalMenuItem('peaklearner', cItem)
 
-                        if (dijitRegistry.byId('dropdownmenu_peaklearner') == undefined) {
+                        myBrowser.addGlobalMenuItem('peaklearner',
+                            new PopupMenuItem({
+                                label: 'Model Display Type',
+                                popup: modelTypeMenu
+                            }));
+
+
+                        if (dijitRegistry.byId('dropdownmenu_peaklearner') === undefined) {
                             myBrowser.renderGlobalMenu('peaklearner', {text: 'PeakLearner'}, myBrowser.menuBar);
                         }
 
